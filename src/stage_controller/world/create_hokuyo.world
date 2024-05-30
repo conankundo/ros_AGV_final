@@ -1,0 +1,90 @@
+# Định nghĩa cảm biến Hokuyo với các thuộc tính cụ thể
+define hokuyo ranger
+(
+  sensor( 
+    range [ 0.0..  10.0 ]  # Phạm vi từ 0.0 đến 30.0 mét
+    fov 270             # Trường nhìn 270.25 độ
+    samples 1081           # Số lượng mẫu quét là 1081
+  )
+
+  # Các thuộc tính chung của mô hình cảm biến
+  color "red"              # Màu sắc của cảm biến là đỏ
+  size [ 0.05 0.05 0.1 ]   # Kích thước của cảm biến
+)
+
+# Định nghĩa mô hình khối với kích thước cụ thể
+define block model
+(
+  size [0.5 0.5 0.5]  # Kích thước của khối
+  gui_nose 1                # Không hiển thị mũi tên hướng
+)
+
+# Định nghĩa vị trí của robot Roomba
+define roomba position
+(
+    size [0.2 0.2 0.25]   # Kích thước của robot Roomba
+
+    # Block này để gần đúng với hình dạng tròn của Roomba
+    origin [-0.05 0 0 0]    # Gốc tọa độ của robot
+    color "red"             # Màu sắc của robot là đỏ
+    gui_nose 1              # Hiển thị mũi tên hướng
+    drive "diff"            # Hệ thống lái vi sai
+    localization "odom"     # Định vị bằng odometry
+    odom_error [0.00 0.00 0.00 0.00]  # Sai số odometry
+    hokuyo( pose [0.050 0.000 0 0.000] )  # Gắn cảm biến Hokuyo với tọa độ cụ thể
+)
+
+# Định nghĩa sơ đồ mặt bằng
+define floorplan model
+(
+  color "gray30"     # Màu sắc của mặt bằng là xám
+
+  # Hầu hết các bản đồ sẽ cần một hộp giới hạn
+  boundary 0         # Có hộp giới hạn
+
+  gui_nose 1         # Không hiển thị mũi tên hướng
+  gui_grid 0         # Không hiển thị lưới
+  gui_outline 0      # Không hiển thị viền
+  gripper_return 0   # Không có phản hồi từ kẹp
+  fiducial_return 0  # Không có phản hồi từ dấu nhận dạng
+  laser_return 1     # Có phản hồi từ laser
+)
+
+# Đặt độ phân giải của mô hình raytrace
+resolution 1  # Độ phân giải là 0.02 mét
+
+# Khoảng thời gian mô phỏng
+interval_sim 100  # Thời gian bước mô phỏng là 100 milliseconds
+
+# Thiết lập cửa sổ mô phỏng
+window
+( 
+  size [ 600.000 600.000 ]   # Kích thước cửa sổ
+  rotate [ 0.000 0.000 ]     # Góc xoay của cửa sổ
+  center [ 10 10 ]         # Tọa độ trung tâm của cửa sổ
+  scale 28.806               # Tỷ lệ hiển thị
+  show_data 1                # Hiển thị dữ liệu
+  show_footprints 1          # Hiển thị dấu chân robot
+  show_grid 1                # Hiển thị lưới
+)
+
+# Tải bản đồ môi trường từ tệp bitmap
+floorplan
+( 
+  name "Mapa"                # Tên của mặt bằng
+  bitmap "map2.pgm"         # Tệp bitmap của mặt bằng
+  size [20 20 0.5]           # Kích thước của mặt bằng
+  pose [ 10 10 0 0 ]        # Tọa độ của mặt bằng
+)
+
+# Định nghĩa và vị trí của các robot và mục tiêu
+#roomba( pose [ 9 8 0 0 ] name "roomba_1" color "blue")
+#roomba( pose [ 8 9 0 0 ] name "roomba_2" color "red")
+#roomba( pose [ 7 13 0 0 ]  name "roomba_3" color "purple")
+#roomba( pose [ 3 9 0 0 ]  name "roomba_3" color "purple")
+roomba( pose [ 7 18.5 0 0 ] name "roomba_3" color "green")
+#roomba( pose [ 8 8 0 0 ]  name "roomba_3" color "purple")   # Robot Roomba với tên "roomba_3" màu tím
+block( pose [ 8 13 0 0 ] name "target_0" color "red")       # Mục tiêu 0 màu đỏ
+#block( pose [ 17 4.4 0 0 ] name "target_1" color "blue")    # Mục tiêu 1 màu xanh
+#block( pose [ 16.2 12 0 0 ] name "target_2" color "green")  # Mục tiêu 2 màu xanh lá
+#block( pose [ 2 2 0 0 ] name "target_3" color "yellow")     # Mục tiêu 3 màu vàng
